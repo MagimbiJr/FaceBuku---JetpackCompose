@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "480041598703",
+    "project_id": "facebook-compose-e9433",
+    "storage_bucket": "facebook-compose-e9433.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480041598703:android:222f64df82be061ff9a51a",
+        "android_client_info": {
+          "package_name": "com.tana.facebookclone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "480041598703-1jasj6tucp9dlvkpij7kb314khqv3rc1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tana.facebookclone",
+            "certificate_hash": "53336433b3d0286ac4ce572377e03fb2d4a7038d"
+          }
+        },
+        {
+          "client_id": "480041598703-neip65s32i2fn3pi86got8db3ghaqgcv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBZDJIeLpG73XEpWpYbYmnTODHK0IA8iM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "480041598703-neip65s32i2fn3pi86got8db3ghaqgcv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

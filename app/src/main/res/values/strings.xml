@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">FacebookClone</string>
+    <string name="whats_on_your_mind">What\'s on your mind?</string>
+    <string name="facebook_app_id">1499706980504945</string>
+    <string name="fb_login_protocol_scheme">fb1499706980504945</string>
+    <string name="facebook_client_token">229c85004ae288d58395b945be68b824</string>
+    <string name="gallery_permission_title">Allow access to your camera roll</string>
+    <string name="gallery_permission_text">Allow access to share photos and videos, suggest photos to upload, and enables other features. You can always change this in your device settings</string>
+    <string name="rationale_text">Can\'t access storage without your permission</string>
+    <string name="rationale_title">Permission denied</string>
+    <string name="add_post_textfield_label">Say something about this photo</string>
+</resources>
