@@ -161,6 +161,44 @@ class FirebaseRemote @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun updateProfilePhoto(uri: Uri, user: User?): Flow<Resource<out Response>> = callbackFlow {
+        val snapshotListener = imageRef.putFile(uri).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                if (task.isComplete) {
+                    imageRef.downloadUrl.addOnSuccessListener { downloadTask ->
+                        if (currentUser != null) {
+                            val updatedUser = User(
+                                userId = user?.userId ?: "",
+                                firstName = user?.firstName,
+                                lastName = user?.lastName,
+                                bio = user?.bio,
+                                birthDate = user?.birthDate,
+                                gender = user?.gender,
+                                userProfilePic = downloadTask.toString(),
+                                coverPhoto = user?.coverPhoto
+                            )
+
+                            usersRef.document(currentUser.uid).set(updatedUser).addOnCompleteListener { userRefTask ->
+                                val response = if (userRefTask.isSuccessful) {
+                                    val data = Response(
+                                        success = true,
+                                        message = "Profile picture updated successfully"
+                                    )
+                                    Resource.Success(data = data)
+                                } else {
+                                    Resource.Failure(message = userRefTask.exception?.localizedMessage)
+                                }
+                                trySend(response)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        awaitClose { snapshotListener.isCanceled }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun updateCoverPhoto(uri: Uri, user: User?): Flow<Resource<out Response>> = callbackFlow {
         val snapshotListener = imageRef.putFile(uri).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -229,11 +267,6 @@ class FirebaseRemote @Inject constructor(
             val response = if (value != null) {
                 val data = value.documents.mapNotNull { postSnapshot ->
                     postSnapshot.toPost()
-//                    val post = postSnapshot.toPost()
-//                    usersRef.document(userId).get().addOnSuccessListener { userSnapshot ->
-//                        post?.user = userSnapshot.toUser()
-//                    }
-//                    post
                 }
                 Log.d("TAG", "getPostsByUser: posts are $data")
                 Log.d("TAG", "getPostsByUser: User id is $userId")

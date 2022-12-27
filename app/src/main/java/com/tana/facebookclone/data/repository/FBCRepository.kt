@@ -27,6 +27,8 @@ interface FBCRepository {
 
     suspend fun updateCoverPhoto(uri: Uri, user: User?): Flow<Resource<out Response>>
 
+    suspend fun updateProfilePhoto(uri: Uri, user: User?): Flow<Resource<out Response>>
+
     suspend fun getPosts(): Flow<Resource<out List<Post>>>
 
     suspend fun getPostByUser(userId: String?): Flow<Resource<out List<Post>>>
