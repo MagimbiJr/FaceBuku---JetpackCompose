@@ -10,6 +10,7 @@ import com.tana.facebookclone.domain.modal.Comment
 import com.tana.facebookclone.domain.modal.Post
 import com.tana.facebookclone.domain.modal.User
 import com.tana.facebookclone.presentation.home.tab_screens.*
+import com.tana.facebookclone.utils.AppEvents
 import kotlinx.coroutines.CoroutineScope
 
 //typealias ComposableFun = @Composable () -> Unit
@@ -37,6 +38,7 @@ sealed class TabScreens(val label: String, val icon: Int, val screen: @Composabl
     @RequiresApi(Build.VERSION_CODES.O)
     class Profile(
         scope: CoroutineScope,
+        onNavigateToUpdateCover: (AppEvents.Navigate) -> Unit,
         scaffoldState: ScaffoldState
     ) : TabScreens(
         label = "Profile",
@@ -44,6 +46,7 @@ sealed class TabScreens(val label: String, val icon: Int, val screen: @Composabl
         screen = {
             ProfileScreen(
                 scope = scope,
+                onNavigateToUpdateCover = onNavigateToUpdateCover,
                 scaffoldState = scaffoldState
             )
         }

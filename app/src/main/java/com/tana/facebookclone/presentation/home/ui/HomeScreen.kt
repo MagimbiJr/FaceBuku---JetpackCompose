@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun HomeScreen(
     goToSignIn: (AppEvents.SignInRequired) -> Unit,
-    //navigate: (AppEvents.Navigate) -> Unit,
+    onNavigateToUpdateCover: (AppEvents.Navigate) -> Unit,
     navHostController: NavHostController,
     systemUiController: SystemUiController,
     scope: CoroutineScope,
@@ -47,6 +47,7 @@ fun HomeScreen(
         TabScreens.Friends, TabScreens.Watch,
         TabScreens.Profile(
             scope = scope,
+            onNavigateToUpdateCover = onNavigateToUpdateCover,
             scaffoldState = scaffoldState
         ), TabScreens.Notification, TabScreens.Menu
     )

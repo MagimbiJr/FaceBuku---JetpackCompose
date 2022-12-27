@@ -25,7 +25,7 @@ interface FBCRepository {
         isNetworkAvailable: Boolean,
     ): Flow<Resource<out Response>>
 
-    suspend fun updateCoverPhoto(uri: Uri): Flow<Resource<out Response>>
+    suspend fun updateCoverPhoto(uri: Uri, user: User?): Flow<Resource<out Response>>
 
     suspend fun getPosts(): Flow<Resource<out List<Post>>>
 

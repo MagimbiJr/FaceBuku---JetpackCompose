@@ -37,6 +37,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun ProfileScreen(
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
+    onNavigateToUpdateCover: (AppEvents.Navigate) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
@@ -48,20 +49,13 @@ fun ProfileScreen(
             modalBottomSheetValue != ModalBottomSheetValue.HalfExpanded
         }
     )
-    val galleryPermission = rememberPermissionState(
-        permission = Manifest.permission.READ_EXTERNAL_STORAGE
-    )
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri ->
-        viewModel.updateUri(uri = uri)
-    }
-    val context = LocalContext.current
 
     LaunchedEffect(key1 = appEvent) {
         appEvent.collectLatest { event ->
             when(event) {
-                is AppEvents.Navigate -> {}
+                is AppEvents.Navigate -> {
+                    onNavigateToUpdateCover(event)
+                }
                 is AppEvents.PopBack -> {}
                 is AppEvents.ShowSnackBar -> {
                     scaffoldState.snackbarHostState.showSnackbar(event.message)

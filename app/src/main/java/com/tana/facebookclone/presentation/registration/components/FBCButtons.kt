@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tana.facebookclone.presentation.theme.buttonHeight
@@ -60,20 +61,29 @@ fun FBCSecondaryButton(
         colors = colors,
         shape = MaterialTheme.shapes.medium
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            if (icon != null) {
+        if (icon != null) {
+            Row(
+                modifier = modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+
                 Icon(
                     painter = painterResource(id = icon),
                     contentDescription = "Icon",
                     modifier = modifier
-                        .size(24.dp)
+                        .size(14.dp)
                 )
                 Spacer(modifier = modifier.width(12.dp))
+
+                Text(
+                    text = text,
+                    color = MaterialTheme.colors.onPrimary,
+                    textAlign = TextAlign.Center,
+                )
             }
-            
+        } else {
             Text(
                 text = text,
                 color = MaterialTheme.colors.onPrimary,
@@ -105,6 +115,6 @@ fun FBCTextButton(
             textAlign = TextAlign.Center,
             fontSize = 16.sp,
 
-        )
+            )
     }
 }

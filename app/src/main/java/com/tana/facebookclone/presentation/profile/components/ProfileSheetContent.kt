@@ -82,7 +82,7 @@ fun ProfileSheetContent(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .clickable { onCreateAvatarClicked() }
+                .clickable { onCreateCoverClicked() }
                 .padding(vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)

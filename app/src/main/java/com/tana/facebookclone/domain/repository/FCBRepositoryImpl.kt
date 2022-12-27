@@ -62,8 +62,8 @@ class FCBRepositoryImpl @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override suspend fun updateCoverPhoto(uri: Uri): Flow<Resource<out Response>> {
-        return api.updateCoverPhoto(uri = uri)
+    override suspend fun updateCoverPhoto(uri: Uri, user: User?): Flow<Resource<out Response>> {
+        return api.updateCoverPhoto(uri = uri, user = user)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

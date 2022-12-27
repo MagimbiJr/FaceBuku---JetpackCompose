@@ -161,14 +161,23 @@ class FirebaseRemote @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun updateCoverPhoto(uri: Uri): Flow<Resource<out Response>> = callbackFlow {
+    suspend fun updateCoverPhoto(uri: Uri, user: User?): Flow<Resource<out Response>> = callbackFlow {
         val snapshotListener = imageRef.putFile(uri).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 if (task.isComplete) {
-                    imageRef.downloadUrl.addOnSuccessListener { it ->
+                    imageRef.downloadUrl.addOnSuccessListener { downloadedUri ->
                         if (currentUser != null) {
-                            val user = User().copy(coverPhoto = it.toString())
-                            usersRef.document(currentUser.uid).set(user).addOnCompleteListener { usersRefTask ->
+                            val updatedUser = User(
+                                userId = user?.userId ?: "",
+                                firstName = user?.firstName,
+                                lastName = user?.lastName,
+                                bio = user?.bio,
+                                birthDate = user?.birthDate,
+                                gender = user?.gender,
+                                userProfilePic = user?.userProfilePic,
+                                coverPhoto = downloadedUri.toString()
+                            )
+                            usersRef.document(currentUser.uid).set(updatedUser).addOnCompleteListener { usersRefTask ->
                                 val response = if (usersRefTask.isSuccessful) {
                                     val data = Response(
                                         success = true,

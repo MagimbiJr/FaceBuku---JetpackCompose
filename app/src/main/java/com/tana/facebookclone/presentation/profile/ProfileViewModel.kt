@@ -56,21 +56,26 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             Log.d("TAG", "ViewModel: user is ${uiState.value.user?.firstName}")
             Log.d("TAG", "ViewModel: Id is ${uiState.value.user?.userId}")
-            getPostsByUserUseCase(userId = _uiState.value.user?.userId).collectLatest { response ->
-                when (response) {
-                    is Resource.Success -> {
-                        val posts = response.data.reversed()
-                        _uiState.value = _uiState.value.copy(
-                            posts = posts
-                        )
+            val user = _uiState.value.user
+            if (user != null) {
+                getPostsByUserUseCase(userId = user.userId).collectLatest { response ->
+                    when (response) {
+                        is Resource.Success -> {
+                            val posts = response.data.reversed()
+                            _uiState.value = _uiState.value.copy(
+                                posts = posts
+                            )
+                        }
+                        is Resource.Failure -> {
+                            _uiState.value = _uiState.value.copy(
+                                errorMessage = response.message!!
+                            )
+                        }
+                        is Resource.Loading -> Unit
                     }
-                    is Resource.Failure -> {
-                        _uiState.value = _uiState.value.copy(
-                            errorMessage = response.message!!
-                        )
-                    }
-                    is Resource.Loading -> Unit
                 }
+            } else {
+                _appEvents.send(AppEvents.SignInRequired("signin"))
             }
         }
     }
@@ -93,17 +98,29 @@ class ProfileViewModel @Inject constructor(
 
     fun updateCoverPhoto() {
         viewModelScope.launch {
-            updateCoverUseCase(uri = _uiState.value.uri!!).collectLatest { response ->
-                when(response) {
-                    is Resource.Success -> {
-                        _appEvents.send(AppEvents.ShowSnackBar(response.data.message))
-                    }
-                    is Resource.Failure -> {
-                        _uiState.value = _uiState.value.copy(errorMessage = response.message ?: "")
-                    }
-                    is Resource.Loading -> Unit
-                }
-            }
+           if (_uiState.value.user != null) {
+               _uiState.value = _uiState.value.copy(loading = true)
+               updateCoverUseCase(
+                   uri = _uiState.value.uri!!,
+                   user = _uiState.value.user
+               ).collectLatest { response ->
+                   when(response) {
+                       is Resource.Success -> {
+                           _appEvents.send(AppEvents.ShowSnackBar(response.data.message))
+                           _appEvents.send(AppEvents.Navigate("home"))
+                       }
+                       is Resource.Failure -> {
+                           _uiState.value = _uiState.value.copy(errorMessage = response.message ?: "")
+                       }
+                       is Resource.Loading -> {
+                           _uiState.value = _uiState.value.copy(loading = true)
+                       }
+                   }
+               }
+               _uiState.value = _uiState.value.copy(loading = false)
+           } else {
+               _appEvents.send(AppEvents.SignInRequired("signin"))
+           }
         }
     }
 
@@ -118,10 +135,14 @@ class ProfileViewModel @Inject constructor(
     fun createCoverClicked() {
         viewModelScope.launch {
             _appEvents.send(
-                AppEvents.ShowSnackBar(
-                    message = "Cover creation is unavailable"
-                )
+                AppEvents.Navigate(route = "update_cover_screen")
             )
+        }
+    }
+
+    fun backIconClicked() {
+        viewModelScope.launch {
+            _appEvents.send(AppEvents.PopBack)
         }
     }
 

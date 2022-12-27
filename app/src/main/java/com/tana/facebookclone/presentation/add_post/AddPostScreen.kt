@@ -1,12 +1,7 @@
 package com.tana.facebookclone.presentation.add_post
 
 import android.Manifest
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Build
-import android.provider.Settings
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -15,20 +10,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.*
-import com.tana.facebookclone.R
 import com.tana.facebookclone.presentation.components.DisplayRationale
-import com.tana.facebookclone.presentation.components.FBCTopAppBar
 import com.tana.facebookclone.presentation.components.LoadingScreen
 import com.tana.facebookclone.presentation.components.NoStoragePermission
 import com.tana.facebookclone.utils.AppEvents

@@ -19,6 +19,7 @@ import com.google.accompanist.systemuicontroller.SystemUiController
 import com.tana.facebookclone.presentation.add_post.AddPostScreen
 import com.tana.facebookclone.presentation.comments.CommentsScreen
 import com.tana.facebookclone.presentation.home.ui.HomeScreen
+import com.tana.facebookclone.presentation.profile.UpdateCoverScreen
 import com.tana.facebookclone.presentation.registration.signin.ui.SignInScreen
 import com.tana.facebookclone.presentation.registration.signin.ui.keyboardAsState
 import com.tana.facebookclone.presentation.registration.signup.ui.SignUpScreen
@@ -46,7 +47,9 @@ fun FBNavHost(
                         }
                     }
                 },
-                //navigate = {},
+                onNavigateToUpdateCover = {
+                    navHostController.navigate(it.route)
+                },
                 navHostController = navHostController,
                 systemUiController = systemUiController,
                 scope = scope,
@@ -100,8 +103,12 @@ fun FBNavHost(
                 keyboardState = keyboardState
             )
         }
-        composable(route = "profile") {
-
+        composable(route = "update_cover_screen") {
+            UpdateCoverScreen(
+                scaffoldState = scaffoldState,
+                onNavigateToHome = {navHostController.navigate(it.route) },
+                onPopBack = { navHostController.popBackStack() }
+            )
         }
     }
 }
