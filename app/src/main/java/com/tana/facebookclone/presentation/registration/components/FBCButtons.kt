@@ -1,8 +1,11 @@
 package com.tana.facebookclone.presentation.registration.components
 
+import androidx.compose.foundation.interaction.InteractionSource
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,6 +22,7 @@ fun FBCPrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier,
     enabled: Boolean,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     backgroundColor: Color = MaterialTheme.colors.primary
 ) {
     val colors = ButtonDefaults.buttonColors(
@@ -32,7 +36,8 @@ fun FBCPrimaryButton(
             .heightIn(buttonHeight),
         colors = colors,
         shape = MaterialTheme.shapes.medium,
-        enabled = enabled
+        enabled = enabled,
+        interactionSource = interactionSource
     ) {
         Text(
             text = text,

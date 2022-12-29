@@ -23,8 +23,12 @@ import kotlinx.coroutines.launch
 fun ProfileContents(
     uiState: ProfileUiState,
     bottomSheetState: ModalBottomSheetState,
-    onCreateCoverClicked: () -> Unit,
+    onUpdateCoverClicked: () -> Unit,
+    onUpdateProfileClicked: () -> Unit,
     onCreateAvatarClicked: () -> Unit,
+    onAddToStoryClicked: () -> Unit,
+    onEditProfileClicked: () -> Unit,
+    onMoreClicked: () -> Unit,
     scope: CoroutineScope,
     modifier: Modifier
 ) {
@@ -32,7 +36,8 @@ fun ProfileContents(
         sheetContent = {
             ProfileSheetContent(
                 onCreateAvatarClicked = onCreateAvatarClicked,
-                onCreateCoverClicked = onCreateCoverClicked,
+                onUpdateCoverClicked = onUpdateCoverClicked,
+                onUpdateProfileClicked = onUpdateProfileClicked,
                 modifier = modifier
             )
         },
@@ -46,7 +51,7 @@ fun ProfileContents(
         ) {
             item {
                 ProfileHeader(
-                    imageDp = uiState.user?.userProfilePic ?: "",
+                    userProfilePic = uiState.user?.userProfilePic ?: "",
                     cover = uiState.user?.coverPhoto ?: "",
                     onClick = {
                         scope.launch {
@@ -60,6 +65,9 @@ fun ProfileContents(
                 ProfileDetails(
                     name = "${uiState.user?.firstName} ${uiState.user?.lastName}",
                     bio = uiState.user?.bio ?: "",
+                    onAddToStoryClicked = onAddToStoryClicked,
+                    onEditProfileClicked = onEditProfileClicked,
+                    onMoreClicked = onMoreClicked,
                     modifier = modifier
                 )
             }

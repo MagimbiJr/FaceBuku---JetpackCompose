@@ -19,8 +19,9 @@ import com.tana.facebookclone.R
 
 @Composable
 fun ProfileSheetContent(
-    onCreateAvatarClicked: () -> Unit,
-    onCreateCoverClicked: () -> Unit,
+    onCreateAvatarClicked: () -> Unit = {},
+    onUpdateCoverClicked: () -> Unit = {},
+    onUpdateProfileClicked: () -> Unit = {},
     modifier: Modifier
 ) {
     Column(
@@ -65,7 +66,7 @@ fun ProfileSheetContent(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .clickable { onCreateAvatarClicked() }
+                .clickable { onUpdateProfileClicked() }
                 .padding(vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -82,7 +83,7 @@ fun ProfileSheetContent(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .clickable { onCreateCoverClicked() }
+                .clickable { onUpdateCoverClicked() }
                 .padding(vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -99,7 +100,7 @@ fun ProfileSheetContent(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .clickable { onCreateCoverClicked() }
+                .clickable { onUpdateCoverClicked() }
                 .padding(vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)

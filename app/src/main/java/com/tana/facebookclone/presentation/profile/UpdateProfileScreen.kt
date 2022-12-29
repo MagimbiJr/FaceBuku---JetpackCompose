@@ -1,29 +1,30 @@
 package com.tana.facebookclone.presentation.profile
 
-import android.Manifest
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.PermissionStatus
-import com.google.accompanist.permissions.rememberPermissionState
 import com.google.accompanist.permissions.shouldShowRationale
 import com.tana.facebookclone.R
 import com.tana.facebookclone.presentation.components.DisplayRationale
 import com.tana.facebookclone.presentation.components.FBCTopAppBar
 import com.tana.facebookclone.presentation.components.LoadingScreen
 import com.tana.facebookclone.presentation.components.NoStoragePermission
-import com.tana.facebookclone.presentation.profile.components.UpdateCoverContent
+import com.tana.facebookclone.presentation.profile.components.UpdateProfileContent
 import com.tana.facebookclone.presentation.registration.components.FBCPrimaryButton
 import com.tana.facebookclone.utils.AppEvents
 import com.tana.facebookclone.utils.openSettings
@@ -31,7 +32,8 @@ import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun UpdateCoverScreen(
+fun UpdateProfileScreen(
+    galleryPermission: PermissionState,
     scaffoldState: ScaffoldState,
     onNavigateToHome: (AppEvents.Navigate) -> Unit,
     onPopBack: (AppEvents.PopBack) -> Unit,
@@ -39,10 +41,7 @@ fun UpdateCoverScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState = viewModel.uiState.collectAsState().value
-    val appState = viewModel.appEvents
-    val galleryPermission = rememberPermissionState(
-        permission = Manifest.permission.READ_EXTERNAL_STORAGE
-    )
+    val appEvent = viewModel.appEvents
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
@@ -50,8 +49,8 @@ fun UpdateCoverScreen(
     }
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = appState) {
-        appState.collectLatest { event ->
+    LaunchedEffect(key1 = appEvent) {
+        appEvent.collectLatest { event ->
             when (event) {
                 is AppEvents.Navigate -> {
                     onNavigateToHome(event)
@@ -62,7 +61,7 @@ fun UpdateCoverScreen(
                 is AppEvents.ShowSnackBar -> {
                     scaffoldState.snackbarHostState.showSnackbar(event.message)
                 }
-                is AppEvents.SignInRequired -> {}
+                is AppEvents.SignInRequired -> Unit
             }
         }
     }
@@ -71,16 +70,16 @@ fun UpdateCoverScreen(
         scaffoldState = scaffoldState,
         topBar = {
             FBCTopAppBar(
-                title = "Update cover",
+                title = "Update profile",
                 navigationIcon = R.drawable.back_arrow_icon,
                 onNavigationIconClick = viewModel::backIconClicked,
                 modifier = modifier,
                 actions = {
                     FBCPrimaryButton(
                         text = "Save",
-                        onClick = viewModel::updateCoverPhoto,
+                        onClick = viewModel::updateProfilePhoto,
                         modifier = modifier,
-                        enabled = true
+                        enabled = true,
                     )
                 },
                 iconSize = dimensionResource(id = R.dimen.back_icon_size)
@@ -92,16 +91,15 @@ fun UpdateCoverScreen(
                 LaunchedEffect(key1 = launcher) {
                     launcher.launch("image/*")
                 }
-
                 if (uiState.uri != null) {
                     if (uiState.loading) {
                         LoadingScreen()
                     } else {
-                        UpdateCoverContent(
-                            modifier = modifier
-                                .padding(paddingValues),
+                        UpdateProfileContent(
+                            uiState = uiState,
                             onCreateAvatarBtnClicked = viewModel::createAvatarClicked,
-                            uiState = uiState
+                            modifier = modifier
+                                .padding(paddingValues)
                         )
                     }
                 }

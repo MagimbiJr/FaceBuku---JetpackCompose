@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tana.facebookclone.domain.use_cases.add_post_use_case.UpdateCoverUseCase
+import com.tana.facebookclone.domain.use_cases.add_post_use_case.UpdateProfilePhotoUseCase
 import com.tana.facebookclone.domain.use_cases.comments.get_comments.GetCommentsUseCase
 import com.tana.facebookclone.domain.use_cases.get_posts.GetPostsByUserUseCase
 import com.tana.facebookclone.domain.use_cases.get_user_use_case.GetUserUseCase
@@ -24,7 +25,8 @@ class ProfileViewModel @Inject constructor(
     private val userUseCase: GetUserUseCase,
     private val getPostsByUserUseCase: GetPostsByUserUseCase,
     private val getCommentsUseCase: GetCommentsUseCase,
-    private val updateCoverUseCase: UpdateCoverUseCase
+    private val updateCoverUseCase: UpdateCoverUseCase,
+    private val updateProfilePhotoUseCase: UpdateProfilePhotoUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -34,7 +36,7 @@ class ProfileViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(loading = _uiState.value.user == null)
+            // _uiState.value = _uiState.value.copy(loading = _uiState.value.user == null)
             userUseCase().collectLatest { response ->
                 when (response) {
                     is Resource.Success -> {
@@ -43,12 +45,10 @@ class ProfileViewModel @Inject constructor(
                     is Resource.Failure -> {
                         _uiState.value = _uiState.value.copy(errorMessage = response.message ?: "")
                     }
-                    is Resource.Loading -> {
-                        _uiState.value = _uiState.value.copy(loading = true)
-                    }
+                    is Resource.Loading -> Unit
                 }
             }
-            _uiState.value = _uiState.value.copy(loading = false)
+            //_uiState.value = _uiState.value.copy(loading = false)
         }
     }
 
@@ -96,31 +96,61 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun updateProfilePhoto() {
+        viewModelScope.launch {
+            if (_uiState.value.user != null) {
+                _uiState.value = _uiState.value.copy(loading = true)
+                updateProfilePhotoUseCase(
+                    uri = _uiState.value.uri!!,
+                    user = _uiState.value.user
+                ).collectLatest { response ->
+                    when (response) {
+                        is Resource.Success -> {
+                            _appEvents.send(AppEvents.ShowSnackBar(message = response.data.message))
+                            _appEvents.send(AppEvents.Navigate(route = "home"))
+                        }
+                        is Resource.Failure -> {
+                            _uiState.value =
+                                _uiState.value.copy(errorMessage = response.message ?: "")
+                        }
+                        is Resource.Loading -> {
+                            _uiState.value = _uiState.value.copy(loading = true)
+                        }
+                    }
+                }
+                _uiState.value = _uiState.value.copy(loading = false)
+            } else {
+                _appEvents.send(AppEvents.SignInRequired("signin"))
+            }
+        }
+    }
+
     fun updateCoverPhoto() {
         viewModelScope.launch {
-           if (_uiState.value.user != null) {
-               _uiState.value = _uiState.value.copy(loading = true)
-               updateCoverUseCase(
-                   uri = _uiState.value.uri!!,
-                   user = _uiState.value.user
-               ).collectLatest { response ->
-                   when(response) {
-                       is Resource.Success -> {
-                           _appEvents.send(AppEvents.ShowSnackBar(response.data.message))
-                           _appEvents.send(AppEvents.Navigate("home"))
-                       }
-                       is Resource.Failure -> {
-                           _uiState.value = _uiState.value.copy(errorMessage = response.message ?: "")
-                       }
-                       is Resource.Loading -> {
-                           _uiState.value = _uiState.value.copy(loading = true)
-                       }
-                   }
-               }
-               _uiState.value = _uiState.value.copy(loading = false)
-           } else {
-               _appEvents.send(AppEvents.SignInRequired("signin"))
-           }
+            if (_uiState.value.user != null) {
+                _uiState.value = _uiState.value.copy(loading = true)
+                updateCoverUseCase(
+                    uri = _uiState.value.uri!!,
+                    user = _uiState.value.user
+                ).collectLatest { response ->
+                    when (response) {
+                        is Resource.Success -> {
+                            _appEvents.send(AppEvents.ShowSnackBar(response.data.message))
+                            _appEvents.send(AppEvents.Navigate("home"))
+                        }
+                        is Resource.Failure -> {
+                            _uiState.value =
+                                _uiState.value.copy(errorMessage = response.message ?: "")
+                        }
+                        is Resource.Loading -> {
+                            _uiState.value = _uiState.value.copy(loading = true)
+                        }
+                    }
+                }
+                _uiState.value = _uiState.value.copy(loading = false)
+            } else {
+                _appEvents.send(AppEvents.SignInRequired("signin"))
+            }
         }
     }
 
@@ -128,15 +158,35 @@ class ProfileViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(uri = uri)
     }
 
-    fun changeDpClicked() {}
+    fun addToStoryClicked() {
+        viewModelScope.launch {
+            _appEvents.send(
+                AppEvents.ShowSnackBar(
+                    message = "Add to story feature is unavailable"
+                )
+            )
+        }
+    }
 
-    fun changeCoverClicked() {}
+    fun editProfileClicked() {
+        viewModelScope.launch {
+            _appEvents.send(
+                AppEvents.Navigate("edit_profile_screen")
+            )
+        }
+    }
 
-    fun createCoverClicked() {
+    fun updateCoverClicked() {
         viewModelScope.launch {
             _appEvents.send(
                 AppEvents.Navigate(route = "update_cover_screen")
             )
+        }
+    }
+
+    fun updateProfileClicked() {
+        viewModelScope.launch {
+            _appEvents.send(AppEvents.Navigate("update_profile_screen"))
         }
     }
 

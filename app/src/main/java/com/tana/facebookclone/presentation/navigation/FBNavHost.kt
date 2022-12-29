@@ -15,20 +15,25 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.tana.facebookclone.presentation.add_post.AddPostScreen
 import com.tana.facebookclone.presentation.comments.CommentsScreen
 import com.tana.facebookclone.presentation.home.ui.HomeScreen
 import com.tana.facebookclone.presentation.profile.UpdateCoverScreen
+import com.tana.facebookclone.presentation.profile.UpdateProfileScreen
 import com.tana.facebookclone.presentation.registration.signin.ui.SignInScreen
 import com.tana.facebookclone.presentation.registration.signin.ui.keyboardAsState
 import com.tana.facebookclone.presentation.registration.signup.ui.SignUpScreen
 import kotlinx.coroutines.CoroutineScope
 
+@OptIn(ExperimentalPermissionsApi::class)
 @RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun FBNavHost(
     navHostController: NavHostController,
+    galleryPermission: PermissionState,
     systemUiController: SystemUiController,
     scaffoldState: ScaffoldState,
     scrollState: ScrollState,
@@ -49,6 +54,9 @@ fun FBNavHost(
                 },
                 onNavigateToUpdateCover = {
                     navHostController.navigate(it.route)
+                },
+                onNavigateToEditProfile = {
+                    navHostController.navigate("edit_profile_screen")
                 },
                 navHostController = navHostController,
                 systemUiController = systemUiController,
@@ -106,9 +114,32 @@ fun FBNavHost(
         composable(route = "update_cover_screen") {
             UpdateCoverScreen(
                 scaffoldState = scaffoldState,
-                onNavigateToHome = {navHostController.navigate(it.route) },
+                onNavigateToHome = {
+                    navHostController.navigate(it.route) {
+                        popUpTo("home") {
+                            inclusive = true
+                        }
+                    }
+                },
                 onPopBack = { navHostController.popBackStack() }
             )
+        }
+        composable(route = "update_profile_screen") {
+            UpdateProfileScreen(
+                galleryPermission = galleryPermission,
+                scaffoldState = scaffoldState,
+                onNavigateToHome = {
+                    navHostController.navigate(it.route) {
+                        popUpTo("home") {
+                            inclusive = true
+                        }
+                    }
+                },
+                onPopBack = { navHostController.popBackStack() }
+            )
+        }
+        composable(route = "edit_profile_screen") {
+            
         }
     }
 }
