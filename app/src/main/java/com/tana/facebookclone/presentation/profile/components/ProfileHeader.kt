@@ -23,7 +23,7 @@ import com.tana.facebookclone.presentation.theme.FacebookCloneTheme
 
 @Composable
 fun ProfileHeader(
-    imageDp: String,
+    userProfilePic: String,
     cover: String,
     onClick: () -> Unit,
     modifier: Modifier
@@ -45,7 +45,7 @@ fun ProfileHeader(
 
         ) {
             ProfileImage(
-                imageDp = imageDp,
+                imageDp = userProfilePic,
                 onClick = onClick,
                 modifier = modifier
             )
@@ -79,7 +79,8 @@ fun ProfileImage(
                     width = 1.5.dp,
                     color = MaterialTheme.colors.onSurface,
                     shape = CircleShape
-                )
+                ),
+            contentScale = ContentScale.Crop
         )
         Card(
             modifier = modifier
@@ -172,16 +173,6 @@ fun CoverSection(
                     .align(Alignment.Center),
                 tint = MaterialTheme.colors.onSurface
             )
-        }
-    }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun ProfileHeaderPreview() {
-    FacebookCloneTheme() {
-        Surface() {
-            // ProfileImage(imageDp = "", modifier = Modifier)
         }
     }
 }

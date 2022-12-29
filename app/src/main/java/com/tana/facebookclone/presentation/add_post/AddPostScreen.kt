@@ -2,6 +2,7 @@ package com.tana.facebookclone.presentation.add_post
 
 import android.Manifest
 import android.os.Build
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -79,7 +80,6 @@ fun AddPostScreen(
                         LoadingScreen()
                     } else {
                         Column() {
-
                             AddPostContent(
                                 uiState = uiState,
                                 onPostClick = { viewModel.addPost() },

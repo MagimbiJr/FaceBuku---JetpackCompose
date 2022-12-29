@@ -8,6 +8,7 @@ import com.tana.facebookclone.data.repository.FBCRepository
 import com.tana.facebookclone.domain.repository.FCBRepositoryImpl
 import com.tana.facebookclone.domain.use_cases.add_post_use_case.AddPostUseCase
 import com.tana.facebookclone.domain.use_cases.add_post_use_case.UpdateCoverUseCase
+import com.tana.facebookclone.domain.use_cases.add_post_use_case.UpdateProfilePhotoUseCase
 import com.tana.facebookclone.domain.use_cases.comments.add_comment.AddCommentUseCase
 import com.tana.facebookclone.domain.use_cases.comments.get_comments.GetCommentsUseCase
 import com.tana.facebookclone.domain.use_cases.get_user_use_case.GetUserUseCase
@@ -72,6 +73,11 @@ object FBCModule {
     @Singleton
     fun provideUpdateCoverUseCase(repository: FBCRepository): UpdateCoverUseCase =
         UpdateCoverUseCase(repository = repository)
+
+    @Provides
+    @Singleton
+    fun provideUpdateProfilePhotoUseCase(repository: FBCRepository): UpdateProfilePhotoUseCase =
+        UpdateProfilePhotoUseCase(repository = repository)
 
 
     @Provides

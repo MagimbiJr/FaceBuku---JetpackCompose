@@ -14,6 +14,7 @@ import com.tana.facebookclone.utils.Resource
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class FirebaseRemote @Inject constructor(
@@ -161,6 +162,58 @@ class FirebaseRemote @Inject constructor(
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun updateProfilePhoto(uri: Uri, user: User?): Flow<Resource<out Response>> = callbackFlow {
+        val snapshotListener = imageRef.putFile(uri).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                if (task.isComplete) {
+                    imageRef.downloadUrl.addOnSuccessListener { downloadedUri ->
+                        if (currentUser != null) {
+                            val updatedUser = User(
+                                userId = user?.userId ?: "",
+                                firstName = user?.firstName,
+                                lastName = user?.lastName,
+                                bio = user?.bio,
+                                birthDate = user?.birthDate,
+                                gender = user?.gender,
+                                userProfilePic = downloadedUri.toString(),
+                                coverPhoto = user?.coverPhoto
+                            )
+
+                            usersRef.document(currentUser.uid).set(updatedUser).addOnCompleteListener { userRefTask ->
+                                val pronoun = if (user?.gender == "Male") {
+                                    "his"
+                                } else {
+                                    "her"
+                                }
+                                val post = Post(
+                                    postCaption = "Updated $pronoun profile picture",
+                                    postImage = downloadedUri.toString(),
+                                    postedAt = Timestamp.now(),
+                                    userId = currentUser.uid,
+                                    user = user
+                                )
+                                postsRef.document(post.postId).set(post).addOnCompleteListener { postsRefTask ->
+                                    val response = if (postsRefTask.isSuccessful) {
+                                        val data = Response(
+                                            success = true,
+                                            message = "Profile picture updated successfully"
+                                        )
+                                        Resource.Success(data = data)
+                                    } else {
+                                        Resource.Failure(message = userRefTask.exception?.localizedMessage)
+                                    }
+                                    trySend(response)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        awaitClose { snapshotListener.isCanceled }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun updateCoverPhoto(uri: Uri, user: User?): Flow<Resource<out Response>> = callbackFlow {
         val snapshotListener = imageRef.putFile(uri).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -178,16 +231,30 @@ class FirebaseRemote @Inject constructor(
                                 coverPhoto = downloadedUri.toString()
                             )
                             usersRef.document(currentUser.uid).set(updatedUser).addOnCompleteListener { usersRefTask ->
-                                val response = if (usersRefTask.isSuccessful) {
-                                    val data = Response(
-                                        success = true,
-                                        message = "Cover updated successfully"
-                                    )
-                                    Resource.Success(data = data)
+                                val pronoun = if (user?.gender == "Male") {
+                                    "his"
                                 } else {
-                                    Resource.Failure(usersRefTask.exception?.localizedMessage)
+                                    "her"
                                 }
-                                trySend(response)
+                                val post = Post(
+                                    postCaption = "Updated $pronoun cover picture",
+                                    postImage = downloadedUri.toString(),
+                                    postedAt = Timestamp.now(),
+                                    userId = currentUser.uid,
+                                    user = user
+                                )
+                                postsRef.document(post.postId).set(post).addOnCompleteListener { postsRefTask ->
+                                    val response = if (postsRefTask.isSuccessful) {
+                                        val data = Response(
+                                            success = true,
+                                            message = "Cover updated successfully"
+                                        )
+                                        Resource.Success(data = data)
+                                    } else {
+                                        Resource.Failure(usersRefTask.exception?.localizedMessage)
+                                    }
+                                    trySend(response)
+                                }
                             }
                         }
                     }
@@ -229,11 +296,6 @@ class FirebaseRemote @Inject constructor(
             val response = if (value != null) {
                 val data = value.documents.mapNotNull { postSnapshot ->
                     postSnapshot.toPost()
-//                    val post = postSnapshot.toPost()
-//                    usersRef.document(userId).get().addOnSuccessListener { userSnapshot ->
-//                        post?.user = userSnapshot.toUser()
-//                    }
-//                    post
                 }
                 Log.d("TAG", "getPostsByUser: posts are $data")
                 Log.d("TAG", "getPostsByUser: User id is $userId")
