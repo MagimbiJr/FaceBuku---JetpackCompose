@@ -1,7 +1,6 @@
 package com.tana.facebookclone.presentation.home.ui
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -10,7 +9,6 @@ import androidx.compose.material.ScaffoldState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
@@ -27,8 +25,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun HomeScreen(
     goToSignIn: (AppEvents.SignInRequired) -> Unit,
-    onNavigateToUpdateCover: (AppEvents.Navigate) -> Unit,
-    onNavigateToEditProfile: (AppEvents.Navigate) -> Unit,
+    onNavigate: (AppEvents.Navigate) -> Unit,
     navHostController: NavHostController,
     systemUiController: SystemUiController,
     scope: CoroutineScope,
@@ -48,8 +45,7 @@ fun HomeScreen(
         TabScreens.Friends, TabScreens.Watch,
         TabScreens.Profile(
             scope = scope,
-            onNavigateToUpdateCover = onNavigateToUpdateCover,
-            onNavigateToEditProfile = onNavigateToEditProfile,
+            onNavigate = onNavigate,
             scaffoldState = scaffoldState
         ), TabScreens.Notification, TabScreens.Menu
     )
