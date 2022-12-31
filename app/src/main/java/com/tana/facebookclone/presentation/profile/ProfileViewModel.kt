@@ -176,6 +176,14 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    fun onMoreClicked() {
+        viewModelScope.launch {
+            _appEvents.send(
+                AppEvents.Navigate("profile_settings_screen")
+            )
+        }
+    }
+
     fun updateCoverClicked() {
         viewModelScope.launch {
             _appEvents.send(

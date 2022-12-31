@@ -1,6 +1,7 @@
 package com.tana.facebookclone.presentation.components
 
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.*
@@ -23,8 +24,15 @@ fun FBCTopAppBar(
     actions: @Composable RowScope.() -> Unit = {},
     backgroundColor: Color = MaterialTheme.colors.background,
     textAlign: TextAlign = TextAlign.Start,
-    elevation: Dp = 0.dp
+    elevation: Dp = 0.dp,
+    dividerColor: Color = Color.Transparent
 ) {
+    Divider(
+        modifier = modifier
+            .fillMaxWidth(),
+        color = dividerColor,
+        thickness = 1.5.dp
+    )
     TopAppBar(
         title = {
             Text(

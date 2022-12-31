@@ -38,8 +38,7 @@ sealed class TabScreens(val label: String, val icon: Int, val screen: @Composabl
     @RequiresApi(Build.VERSION_CODES.O)
     class Profile(
         scope: CoroutineScope,
-        onNavigateToUpdateCover: (AppEvents.Navigate) -> Unit,
-        onNavigateToEditProfile: (AppEvents.Navigate) -> Unit,
+        onNavigate: (AppEvents.Navigate) -> Unit,
         scaffoldState: ScaffoldState
     ) : TabScreens(
         label = "Profile",
@@ -47,8 +46,7 @@ sealed class TabScreens(val label: String, val icon: Int, val screen: @Composabl
         screen = {
             ProfileScreen(
                 scope = scope,
-                onNavigateToUpdateCover = onNavigateToUpdateCover,
-                onNavigateToEditProfile = onNavigateToEditProfile,
+                onNavigate = onNavigate,
                 scaffoldState = scaffoldState
             )
         }

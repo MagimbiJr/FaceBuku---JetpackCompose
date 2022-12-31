@@ -28,7 +28,8 @@ fun ProfileDetails(
 ) {
     Surface(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        color = MaterialTheme.colors.surface.copy(.7f)
     ) {
         Column(
             modifier = modifier
@@ -48,21 +49,22 @@ fun ProfileDetails(
                     icon = R.drawable.add_round_icon,
                     onClick = onAddToStoryClicked,
                     modifier = modifier,
-                    backgroundColor = MaterialTheme.colors.primary
+                    backgroundColor = MaterialTheme.colors.primary,
+                    textColor = MaterialTheme.colors.onPrimary
                 )
                 ProfileButton(
                     text = "Edit profile",
                     icon = R.drawable.edit_icon,
                     onClick = onEditProfileClicked,
                     modifier = modifier,
-                    backgroundColor = MaterialTheme.colors.onSurface.copy(.3f)
+                    backgroundColor = MaterialTheme.colors.surface
                 )
                 ProfileButton(
                     icon = R.drawable.more_horizontal_icon,
                     onClick = onMoreClicked,
                     modifier = modifier
                         .width(80.dp),
-                    backgroundColor = MaterialTheme.colors.onSurface.copy(.3f)
+                    backgroundColor = MaterialTheme.colors.surface
                 )
             }
             Spacer(modifier = modifier.height(16.dp))
@@ -76,7 +78,8 @@ private fun ProfileButton(
     icon: Int,
     onClick: () -> Unit,
     modifier: Modifier,
-    backgroundColor: Color
+    backgroundColor: Color,
+    textColor: Color = MaterialTheme.colors.onSurface
 ) {
     Card(
         modifier = modifier
@@ -103,7 +106,7 @@ private fun ProfileButton(
                 Spacer(modifier = modifier.width(12.dp))
                 Text(
                     text = text,
-                    color = MaterialTheme.colors.onPrimary,
+                    color = textColor,
                     textAlign = TextAlign.Center,
                 )
             }

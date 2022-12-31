@@ -84,14 +84,14 @@ fun FBCSecondaryButton(
 
                 Text(
                     text = text,
-                    color = MaterialTheme.colors.onPrimary,
+                    color = MaterialTheme.colors.onSurface,
                     textAlign = TextAlign.Center,
                 )
             }
         } else {
             Text(
                 text = text,
-                color = MaterialTheme.colors.onPrimary,
+                color = MaterialTheme.colors.onSurface,
                 modifier = modifier
                     .padding(horizontal = 12.dp),
                 textAlign = TextAlign.Center,

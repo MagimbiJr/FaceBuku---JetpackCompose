@@ -4,12 +4,9 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.tana.facebookclone.presentation.profile.ProfileContents
 import com.tana.facebookclone.presentation.profile.ProfileViewModel
 import com.tana.facebookclone.utils.AppEvents
@@ -22,8 +19,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun ProfileScreen(
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
-    onNavigateToUpdateCover: (AppEvents.Navigate) -> Unit,
-    onNavigateToEditProfile: (AppEvents.Navigate) -> Unit,
+    onNavigate: (AppEvents.Navigate) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
@@ -36,12 +32,12 @@ fun ProfileScreen(
         }
     )
 
+
     LaunchedEffect(key1 = appEvent) {
         appEvent.collectLatest { event ->
             when(event) {
                 is AppEvents.Navigate -> {
-                    onNavigateToUpdateCover(event)
-                    onNavigateToEditProfile(event)
+                    onNavigate(event)
                 }
                 is AppEvents.PopBack -> {}
                 is AppEvents.ShowSnackBar -> {
@@ -64,7 +60,7 @@ fun ProfileScreen(
             onUpdateProfileClicked = viewModel::updateProfileClicked,
             onAddToStoryClicked = viewModel::addToStoryClicked,
             onEditProfileClicked = viewModel::editProfileClicked,
-            onMoreClicked = {},
+            onMoreClicked = viewModel::onMoreClicked,
             scope = scope,
             modifier = modifier
                 .padding(paddingValues)

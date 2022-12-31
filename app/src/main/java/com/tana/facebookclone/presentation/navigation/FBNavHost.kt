@@ -3,18 +3,14 @@ package com.tana.facebookclone.presentation.navigation
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.systemuicontroller.SystemUiController
@@ -23,6 +19,7 @@ import com.tana.facebookclone.presentation.comments.CommentsScreen
 import com.tana.facebookclone.presentation.home.ui.HomeScreen
 import com.tana.facebookclone.presentation.profile.UpdateCoverScreen
 import com.tana.facebookclone.presentation.profile.UpdateProfileScreen
+import com.tana.facebookclone.presentation.profile.settings.ProfileSettingsScreen
 import com.tana.facebookclone.presentation.registration.signin.ui.SignInScreen
 import com.tana.facebookclone.presentation.registration.signin.ui.keyboardAsState
 import com.tana.facebookclone.presentation.registration.signup.ui.SignUpScreen
@@ -52,11 +49,8 @@ fun FBNavHost(
                         }
                     }
                 },
-                onNavigateToUpdateCover = {
+                onNavigate = {
                     navHostController.navigate(it.route)
-                },
-                onNavigateToEditProfile = {
-                    navHostController.navigate("edit_profile_screen")
                 },
                 navHostController = navHostController,
                 systemUiController = systemUiController,
@@ -138,8 +132,18 @@ fun FBNavHost(
                 onPopBack = { navHostController.popBackStack() }
             )
         }
-        composable(route = "edit_profile_screen") {
-            
+        composable(route = "profile_settings_screen") {
+            ProfileSettingsScreen(
+                scaffoldState = scaffoldState,
+                systemUiController = systemUiController,
+                onPopBack = {
+                    navHostController.popBackStack()
+                }
+            )
         }
+        composable(route = "edit_profile_screen") {
+
+        }
+
     }
 }
