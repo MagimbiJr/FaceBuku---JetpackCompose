@@ -16,6 +16,7 @@ import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.systemuicontroller.SystemUiController
 import com.tana.facebookclone.presentation.add_post.AddPostScreen
 import com.tana.facebookclone.presentation.comments.CommentsScreen
+import com.tana.facebookclone.presentation.edit_profile.EditProfileScreen
 import com.tana.facebookclone.presentation.home.ui.HomeScreen
 import com.tana.facebookclone.presentation.profile.UpdateCoverScreen
 import com.tana.facebookclone.presentation.profile.UpdateProfileScreen
@@ -142,7 +143,12 @@ fun FBNavHost(
             )
         }
         composable(route = "edit_profile_screen") {
-
+            EditProfileScreen(
+                systemUiController = systemUiController,
+                scrollState = scrollState,
+                onPopBack = { navHostController.popBackStack() },
+                scaffoldState = scaffoldState
+            )
         }
 
     }
